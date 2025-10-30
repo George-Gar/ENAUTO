@@ -17,11 +17,23 @@ class Filters:
 """
         return filter
     
+    def int_xpath(self, name:str) -> tuple:
+        """
+        Method for providing the xpath filter to get the specified interface by name
+        PARAMS:
+          <name>: name of specified interface
+        """
+        ns_map = {'if': 'urn:ietf:params:xml:ns:yang:ietf-interfaces'}
+        xpath = f"/if:interfaces/if:interface[if:name={name}]"
+        filter = ("xpath", (ns_map, xpath))
+
+        return filter
+
     def ip_int_config(self):
         config = """
 <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
   <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
-    <interface>
+    <interface xmlns:nf="urn:ietf:params:xml:ns:netconf:base:1.0" nf:operation="create">
       <name>GigabitEthernet2</name>
       <enabled>false</enabled>
     </interface>

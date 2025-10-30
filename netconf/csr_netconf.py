@@ -47,6 +47,18 @@ class Client_Class(Filters):
             json_resp = json.dumps(xmltodict.parse(response.xml))
         return json_resp
     
+    def xpath_get(self, host:str, filter:str) -> json:
+        """
+        Method for executing an RPC <get> operarion
+        PARAMS:
+            <host>: ip or domain of device to run operation on
+            <filter>: xml filter and body
+        """
+        with manager.connect(**self.device(host=host)) as m:
+            response = m.get(filter=filter)
+            json_resp = json.dumps(xmltodict.parse(response.xml))
+        return json_resp
+    
     def edit_config(self, host:str, config:str, target:str) -> json:
         """
         Method for pushing configuration to a target datastore
@@ -64,9 +76,9 @@ class Client_Class(Filters):
 if __name__ == "__main__":
     host = "192.168.1.200"
     client = Client_Class()
-    print(client.edit_config(host=host, target="running", config=client.ip_int_config()))
+    #print(client.edit_config(host=host, target="running", config=client.ip_int_config()))
 
-    #print(client.subtree_get(host=host, filter=client.int_subtree()))
+    print(client.xpath_get(host=host, filter=client.int_xpath()))
     # print(client.subtree_get(host="192.168.1.200", filter=client.int_subtree()))
 
 
