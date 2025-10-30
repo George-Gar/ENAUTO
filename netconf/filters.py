@@ -15,8 +15,20 @@ class Filters:
   </interfaces>
 </filter>
 """
-        
         return filter
+    
+    def ip_int_config(self):
+        config = """
+<config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+    <interface>
+      <name>GigabitEthernet2</name>
+      <enabled>false</enabled>
+    </interface>
+  </interfaces>
+</config>
+"""
+        return config
 
 if __name__ == "__main__":
   c = Filters()
