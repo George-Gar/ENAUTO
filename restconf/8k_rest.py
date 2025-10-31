@@ -1,10 +1,11 @@
 import requests
+import os
 import json
 
 base_url = "https://192.168.1.200:443"
 api_resource_path = "/restconf"
-username = "george"
-password = "George1347$"
+username = os.getenv("username")
+password = os.getenv("password")
 headers = {
     "Accept":"application/yang-data+json"
 }
