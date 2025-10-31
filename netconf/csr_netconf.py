@@ -17,6 +17,9 @@ class Client_Class(Filters):
         self.port = 830
 
     def device(self, host:str) -> dict:
+        """
+        Method that returns a reusable device object to avoid repeating code
+        """
         return {
             "host":host,
             "username":self.username,
@@ -35,6 +38,36 @@ class Client_Class(Filters):
             capabilities = m.server_capabilities
             [print(capability) for capability in capabilities if "yang" in capability.lower() and "cisco" in capability.lower() and "interface" in capability.lower()]
 
+    def manager_connect(self, host:str, filter:str, operation:str='get', target:str='candidate') -> str | json:
+        """
+        Method for handling the manager.connect context manager to avoid code repetition
+        PARAMS:
+            <host>: ip or domain of device to run operation on
+            <filter>: xml filter or configuration
+            <operation>: type of rpc operation
+            <target>: the datastore we are targeting
+                *default target is "candidate" options include ["running", "startup"]*
+        """
+        match operation:
+            case "get":
+                with manager.connect(**self.device(host=host)) as m:
+                    response = m.get(filter=filter)
+                    json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
+                    return json_resp
+            case "get_config":
+                with manager.connect(**self.device(host=host)) as m:
+                    response = m.get_config(source=target, filter=filter)
+                    json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
+                    return json_resp
+            case "edit_config":
+                with manager.connect(**self.device(host=host)) as m:
+                    response = m.edit_config(target=target, config=filter)
+                    json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
+                    return json_resp
+            case _:
+                return "Enter Valid RPC operation"
+
+
     def subtree_get(self, host:str, filter:str) -> json:
         """
         Method for executing an RPC <get> operarion
@@ -44,7 +77,7 @@ class Client_Class(Filters):
         """
         with manager.connect(**self.device(host=host)) as m:
             response = m.get(filter=filter)
-            json_resp = json.dumps(xmltodict.parse(response.xml))
+            json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
         return json_resp
     
     def xpath_get(self, host:str, filter:str) -> json:
@@ -56,7 +89,7 @@ class Client_Class(Filters):
         """
         with manager.connect(**self.device(host=host)) as m:
             response = m.get(filter=filter)
-            json_resp = json.dumps(xmltodict.parse(response.xml))
+            json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
         return json_resp
     
     def edit_config(self, host:str, config:str, target:str) -> json:
@@ -69,7 +102,7 @@ class Client_Class(Filters):
         """
         with manager.connect(**self.device(host=host)) as m:
             response = m.edit_config(target=target, config=config)
-            json_resp = json.dumps(xmltodict.parse(response.xml))
+            json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
             return json_resp
 
 
