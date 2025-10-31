@@ -6,7 +6,7 @@ class Filters:
         return
     
     def int_subtree(self) -> str:
-        filter = """
+        filter_ = """
 <filter xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
   <interfaces xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-interfaces-oper">
     <interface>
@@ -15,7 +15,7 @@ class Filters:
   </interfaces>
 </filter>
 """
-        return filter
+        return filter_
     
     def int_xpath(self, name:str) -> tuple:
         """
@@ -25,9 +25,9 @@ class Filters:
         """
         ns_map = {'if': 'urn:ietf:params:xml:ns:yang:ietf-interfaces'}
         xpath = f"/if:interfaces/if:interface[if:name={name}]"
-        filter = ("xpath", (ns_map, xpath))
+        filter_ = ("xpath", (ns_map, xpath))
 
-        return filter
+        return filter_
 
     def ip_int_config(self):
         config = """

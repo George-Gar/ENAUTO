@@ -38,7 +38,7 @@ class Client_Class(Filters):
             capabilities = m.server_capabilities
             [print(capability) for capability in capabilities if "yang" in capability.lower() and "cisco" in capability.lower() and "interface" in capability.lower()]
 
-    def manager_connect(self, host:str, filter:str, operation:str='get', target:str='candidate') -> str | json:
+    def manager_connect(self, host:str, filter_:str, operation:str='get', target:str='candidate') -> str | json:
         """
         Method for handling the manager.connect context manager to avoid code repetition
         PARAMS:
@@ -51,24 +51,24 @@ class Client_Class(Filters):
         match operation:
             case "get":
                 with manager.connect(**self.device(host=host)) as m:
-                    response = m.get(filter=filter)
+                    response = m.get(filter=filter_)
                     json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
                     return json_resp
             case "get_config":
                 with manager.connect(**self.device(host=host)) as m:
-                    response = m.get_config(source=target, filter=filter)
+                    response = m.get_config(source=target, filter=filter_)
                     json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
                     return json_resp
             case "edit_config":
                 with manager.connect(**self.device(host=host)) as m:
-                    response = m.edit_config(target=target, config=filter)
+                    response = m.edit_config(target=target, config=filter_)
                     json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
                     return json_resp
             case _:
                 return "Enter Valid RPC operation"
 
 
-    def subtree_get(self, host:str, filter:str) -> json:
+    def subtree_get(self, host:str, filter_:str) -> json:
         """
         Method for executing an RPC <get> operarion
         PARAMS:
@@ -76,11 +76,11 @@ class Client_Class(Filters):
             <filter>: xml filter and body
         """
         with manager.connect(**self.device(host=host)) as m:
-            response = m.get(filter=filter)
+            response = m.get(filter=filter_)
             json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
         return json_resp
     
-    def xpath_get(self, host:str, filter:str) -> json:
+    def xpath_get(self, host:str, filter_:str) -> json:
         """
         Method for executing an RPC <get> operarion
         PARAMS:
@@ -88,7 +88,7 @@ class Client_Class(Filters):
             <filter>: xml filter and body
         """
         with manager.connect(**self.device(host=host)) as m:
-            response = m.get(filter=filter)
+            response = m.get(filter=filter_)
             json_resp = json.dumps(xmltodict.parse(response.xml), indent=2)
         return json_resp
     
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     client = Client_Class()
     #print(client.edit_config(host=host, target="running", config=client.ip_int_config()))
 
-    print(client.xpath_get(host=host, filter=client.int_xpath()))
+    print(client.xpath_get(host=host, filter_=client.int_xpath()))
     # print(client.subtree_get(host="192.168.1.200", filter=client.int_subtree()))
 
 
