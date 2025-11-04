@@ -3,3 +3,6 @@
 .env
 *.pyc
 yang/
+
+.python_packages
+__pycache__
