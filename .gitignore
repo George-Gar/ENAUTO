@@ -3,6 +3,12 @@
 .env
 *.pyc
 yang/
-
+.git*
+.vscode
+__azurite_db*__.json
+__blobstorage__
+__queuestorage__
+local.settings.json
+test
 .python_packages
 __pycache__
