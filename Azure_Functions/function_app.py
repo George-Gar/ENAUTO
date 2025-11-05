@@ -6,7 +6,7 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.function_name(name="merakiWebhook")
 @app.route(route="merakiWebhook")
-@app.queue_output(arg_name="msg", queue_name="func_queue", connection="AzureWebJobsStorage")
+@app.queue_output(arg_name="msg", queue_name="funcqueue", connection="AzureWebJobsStorage")
 def merakiWebhook(req: func.HttpRequest, msg: func.Out[func.QueueMessage]) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
