@@ -11,9 +11,17 @@ import json
 
 blueprint = func.Blueprint()
 
-
+# merakiWebhook is the main function for receiving an http request object, similar to django views. it takes an inbound http request
+# object as an argument and returns an http response object.
+app = func.FunctionApp()
+# app is the function app that replaces the function.json file 
+# The Binding decorators below do away with having to maintain a functions.json file with attributes because we define
+# them in the @app decorator
+@app.function_name(name="QueueOutput1")
+@app.route(route="message")
+@app.queue_output(arg_name="msg", queue_name="func_queue", connection="AzureWebJobsStorage")
 @blueprint.route(route="merakiWebhook", auth_level=func.AuthLevel.ANONYMOUS)
-def merakiWebhook(req: func.HttpRequest) -> func.HttpResponse:
+def merakiWebhook(req: func.HttpRequest, msg: func.Out[func.QueueMessage]) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     
@@ -25,6 +33,7 @@ def merakiWebhook(req: func.HttpRequest) -> func.HttpResponse:
         shared_secret = req_body.get('sharedSecret')
 
     if shared_secret:
+        msg.set(json.dumps(req_body))
         return func.HttpResponse(body=json.dumps(req_body), headers=headers, status_code=200)
     else:
         return func.HttpResponse(
